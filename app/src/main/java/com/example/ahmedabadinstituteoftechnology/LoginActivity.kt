@@ -4,70 +4,67 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import com.example.ahmedabadinstituteoftechnology.databinding.ActivityMainBinding
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
 
+    // Declare the binding object
     private lateinit var binding: ActivityMainBinding
 
-    // List of mock enrollment numbers for testing
-    private val mockEnrollmentNumbers = listOf(
-        "230020107001", // 3rd Semester Regular Student
-        "220020107054", // 5th Semester Regular Student
-        "210020107029", // 7th Semester Regular Student
-        "240023107017", // 3rd Semester D2D Student
-        "240022107045", // 5th Semester D2D Student
-        "240021107011"  // 7th Semester D2D Student
-    )
+    // Firestore instance
+    private val firestore: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        // Login button click
+        // Initialize the binding object
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // Setup onClickListener for the login button
         binding.btnLogin.setOnClickListener {
-            val enrollmentNumber = binding.etEnrollment.text.toString().trim()
-            val password = binding.etPassword.text.toString().trim()
+            val enrollmentNumber = binding.etEnrollment.text.toString()
+            val password = binding.etPassword.text.toString()
 
+            // Validate inputs
             if (enrollmentNumber.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
-            } else if (enrollmentNumber in mockEnrollmentNumbers && password == "123456") { // Mock credentials
-                // Determine the semester based on the enrollment number
-                val semester = determineSemester(enrollmentNumber)
-
-                // Determine the student type based on the 6th digit (1 for regular, 3 for D2D)
-                val studentType = if (enrollmentNumber[5] == '1') "Regular" else "D2D"
-
-                // Show login success with student type and semester
-                Toast.makeText(this, "Login Successful - $studentType - $semester", Toast.LENGTH_SHORT).show()
-
-                // Proceed to the next screen (you can pass the semester and student type info if needed)
-              //  startActivity(Intent(this, SomeNextActivity::class.java))
             } else {
-                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                // Authenticate user
+                authenticateUser(enrollmentNumber, password)
             }
         }
 
-        // Forgot Password click
+        // Forgot password action
         binding.tvforgotpassword.setOnClickListener {
-            Toast.makeText(this, "Forgot Password", Toast.LENGTH_SHORT).show()
-
+            Toast.makeText(this, "Forgot password clicked!", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // Logic to determine the semester based on enrollment number
-    private fun determineSemester(enrollmentNumber: String): String {
-        // Get the first 2 digits of the enrollment number which indicate the year
-        val year = enrollmentNumber.take(2).toInt()
+    private fun authenticateUser(enrollmentNumber: String, password: String) {
+        firestore.collection("Users")
+            .document(enrollmentNumber)
+            .get()
+            .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                    val storedPassword = documentSnapshot.getString("password")
 
-        // Determine the semester based on the year
-        return when (year) {
-            23 -> "3rd Semester"
-            22 -> "5th Semester"
-            21 -> "7th Semester"
-            24 -> "3rd Semester" // D2D students also have similar semester pattern
-            else -> "Unknown Semester"
-        }
+                    if (storedPassword != null && storedPassword == password) {
+                        Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
+
+                        // Navigate to the next screen
+                        startActivity(Intent(this, B_navigation_Activity::class.java))
+                        finish()
+                    } else {
+                        Toast.makeText(this, "Invalid password", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show()
+                }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 }

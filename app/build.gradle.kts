@@ -64,8 +64,9 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     // or another PDF viewer library
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation ("com.google.firebase:firebase-firestore:24.8.1")
+    implementation ("org.apache.poi:poi:5.2.3")// For reading Excel files
+    implementation ("org.apache.poi:poi-ooxml:5.2.3")
+
 }
 
