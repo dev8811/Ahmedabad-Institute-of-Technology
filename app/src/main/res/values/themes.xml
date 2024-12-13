@@ -8,7 +8,7 @@
     <style name="Theme.AhmedabadInstituteOfTechnology" parent="Base.Theme.AhmedabadInstituteOfTechnology" />
     <style name="Theme.AhmedabadInstituteOfTechnology.NoActionBar">
         <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+        <item name="windowNoTitle">false</item>
     </style>
     <style name="Theme.AhmedabadInstituteOfTechnology.AppBarOverlay"
         parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

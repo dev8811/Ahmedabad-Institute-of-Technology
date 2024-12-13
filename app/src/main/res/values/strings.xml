@@ -20,4 +20,8 @@
     <string name="Login">Login</string>
     <string name="ahmedabad_institute_of_technology">Ahmedabad Institute of Technology</string>
     <string name="app_logo">App Logo</string>
+    <string name="title_activity_bnavigation">B_navigation_Activity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Notice board</string>
+    <string name="title_notifications">Profile</string>
 </resources>
