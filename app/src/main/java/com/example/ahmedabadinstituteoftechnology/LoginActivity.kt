@@ -1,73 +1,74 @@
 package com.example.ahmedabadinstituteoftechnology
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.databinding.DataBindingUtil
 import com.example.ahmedabadinstituteoftechnology.databinding.ActivityMainBinding
+import com.example.ahmedabadinstituteoftechnology.ui.home.HomeFragment
 
 class LoginActivity : AppCompatActivity() {
 
+    // Declare the binding object
     private lateinit var binding: ActivityMainBinding
-
-    // List of mock enrollment numbers for testing
-    private val mockEnrollmentNumbers = listOf(
-        "230020107001", // 3rd Semester Regular Student
-        "220020107054", // 5th Semester Regular Student
-        "210020107029", // 7th Semester Regular Student
-        "240023107017", // 3rd Semester D2D Student
-        "240022107045", // 5th Semester D2D Student
-        "240021107011"  // 7th Semester D2D Student
-    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        // Login button click
+        // Initialize the binding object
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        // Setup onClickListener for the login button
         binding.btnLogin.setOnClickListener {
-            val enrollmentNumber = binding.etEnrollment.text.toString().trim()
-            val password = binding.etPassword.text.toString().trim()
+            val enrollmentNumber = binding.etEnrollment.text.toString()
+            val password = binding.etPassword.text.toString()
 
+            // Validate inputs
             if (enrollmentNumber.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
-            } else if (enrollmentNumber in mockEnrollmentNumbers && password == "123456") { // Mock credentials
-                // Determine the semester based on the enrollment number
-                val semester = determineSemester(enrollmentNumber)
-
-                // Determine the student type based on the 6th digit (1 for regular, 3 for D2D)
-                val studentType = if (enrollmentNumber[5] == '1') "Regular" else "D2D"
-
-                // Show login success with student type and semester
-                Toast.makeText(this, "Login Successful - $studentType - $semester", Toast.LENGTH_SHORT).show()
-
-                // Proceed to the next screen (you can pass the semester and student type info if needed)
-              //  startActivity(Intent(this, SomeNextActivity::class.java))
             } else {
-                Toast.makeText(this, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                val currentSemester = getCurrentSemester(enrollmentNumber)
+                if (currentSemester != null) {
+                    Toast.makeText(this, "Current Semester: $currentSemester", Toast.LENGTH_LONG).show()
+                  startActivity(Intent(this, B_navigation_Activity::class.java))
+                    finish()
+                } else {
+                    Toast.makeText(this, "Invalid Enrollment Number", Toast.LENGTH_LONG).show()
+                }
             }
         }
 
-        // Forgot Password click
+        // Forgot password action
         binding.tvforgotpassword.setOnClickListener {
-            Toast.makeText(this, "Forgot Password", Toast.LENGTH_SHORT).show()
-
+            Toast.makeText(this, "Forgot password clicked!", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // Logic to determine the semester based on enrollment number
-    private fun determineSemester(enrollmentNumber: String): String {
-        // Get the first 2 digits of the enrollment number which indicate the year
-        val year = enrollmentNumber.take(2).toInt()
+    private fun getCurrentSemester(enrollmentNumber: String): Int? {
+        if (enrollmentNumber.length != 12) return null // Ensure enrollment number is valid
 
-        // Determine the semester based on the year
-        return when (year) {
-            23 -> "3rd Semester"
-            22 -> "5th Semester"
-            21 -> "7th Semester"
-            24 -> "3rd Semester" // D2D students also have similar semester pattern
-            else -> "Unknown Semester"
+        val admissionYear = enrollmentNumber.substring(0, 2).toInt() + 2000 // First 2 digits
+        val instituteCode = enrollmentNumber.substring(2, 5)
+        val studentTypeCode = enrollmentNumber.substring(5, 8)
+
+        // Check for valid institute and student type codes
+        if (instituteCode != "002" || (studentTypeCode != "010" && studentTypeCode != "310")) {
+            return null
+        }
+
+        val currentYear = java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
+        val currentMonth = java.util.Calendar.getInstance().get(java.util.Calendar.MONTH) + 1
+
+        // Semester calculation logic
+        val yearDifference = currentYear - admissionYear
+        val semesterOffset = if (currentMonth in 1..6) 0 else 1 // Add 1 if after June
+
+        return when (studentTypeCode) {
+            "010" -> (yearDifference * 2) + semesterOffset - 0 // Regular students
+            "310" -> ((yearDifference - 1) * 2) + semesterOffset + 4 // D to D students
+            else -> null
         }
     }
 }
