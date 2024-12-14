@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.ahmedabadinstituteoftechnology.databinding.FragmentHomeBinding
+import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeFragment : Fragment() {
 
@@ -27,11 +28,46 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        textView.setText("dev")
+        binding.button110.setOnClickListener {addMultipleStudents()  }
 
         return root
     }
+
+
+
+    data class Student(
+        val enrollmentNo: String,
+        val name: String,
+        val email: String,
+        val password: String,
+        val semester: String
+    )
+
+    fun addMultipleStudents() {
+        val db = FirebaseFirestore.getInstance()
+
+        // List of students to add
+        val students = listOf(
+            Student("240023107018", "John", "john@gmail.com", "123456", "3"),
+            Student("240023107019", "Alice", "alice@gmail.com", "123456", "3"),
+            Student("240023107020", "Bob", "bob@gmail.com", "123456", "3"),
+            Student("240023107021", "Charlie", "charlie@gmail.com", "123456", "3")
+        )
+
+        // Iterate and add each student to Firestore
+        for (student in students) {
+            db.collection("Student")
+                .document(student.enrollmentNo) // Use enrollment number as document ID
+                .set(student)
+                .addOnSuccessListener {
+                    println("Successfully added student: ${student.name}")
+                }
+                .addOnFailureListener { e ->
+                    println("Error adding student: ${e.message}")
+                }
+        }
+    }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

@@ -24,4 +24,5 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Notice board</string>
     <string name="title_notifications">Profile</string>
+    <string name="profile_image" />
 </resources>

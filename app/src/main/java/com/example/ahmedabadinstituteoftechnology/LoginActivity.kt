@@ -43,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun authenticateUser(enrollmentNumber: String, password: String) {
-        firestore.collection("Users")
+        firestore.collection("Student")
             .document(enrollmentNumber)
             .get()
             .addOnSuccessListener { documentSnapshot ->
@@ -53,9 +53,13 @@ class LoginActivity : AppCompatActivity() {
                     if (storedPassword != null && storedPassword == password) {
                         Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
 
-                        // Navigate to the next screen
-                        startActivity(Intent(this, B_navigation_Activity::class.java))
+                        // Pass enrollment number to B_navigation_Activity
+                        val intent = Intent(this, B_navigation_Activity::class.java).apply {
+                            putExtra("enrollment_number", enrollmentNumber)
+                        }
+                        startActivity(intent)
                         finish()
+
                     } else {
                         Toast.makeText(this, "Invalid password", Toast.LENGTH_SHORT).show()
                     }

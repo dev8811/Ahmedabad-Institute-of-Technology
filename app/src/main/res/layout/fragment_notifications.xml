@@ -2,30 +2,155 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp"
         tools:context=".ProfileActivity">
 
-        <TextView
-            android:id="@+id/tvEnrollmentNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enrollment Number"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp"
-            android:textStyle="bold" />
+        <!-- Header Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/gradient_background">
 
-        <TextView
-            android:id="@+id/tvCurrentSemester"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Current Semester"
-            android:textSize="18sp"
-            android:layout_marginBottom="8dp"
-            android:textStyle="bold" />
+            <!-- Profile Picture -->
+            <ImageView
+                android:id="@+id/ivProfilePic"
+                android:layout_width="106dp"
+                android:layout_height="106dp"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/circle_background"
+                android:scaleType="centerCrop"
+                android:contentDescription="Profile Picture"
+                android:src="@drawable/profile_pic"
+               />
 
-    </LinearLayout>
+
+            <!-- Student Name -->
+            <TextView
+                android:id="@+id/tvStudentName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Student Name"
+                android:textSize="20sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Profile Details Section -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="250dp"
+            android:background="@android:color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Enrollment Number -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    app:cardCornerRadius="8dp"
+                    android:layout_margin="5dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/enrollment"
+                            app:tint="#FF0000" />
+
+                        <TextView
+                            android:id="@+id/tv_S_enrollment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:textColor="#333333"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Current Semester -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    app:cardCornerRadius="8dp"
+                    android:layout_margin="5dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/sem"
+                            app:tint="#FF0000" />
+
+                        <TextView
+                            android:id="@+id/tvStudentSemester"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+
+                            android:textColor="#333333"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Repeat the CardView structure for all fields -->
+                <!-- Example: Email -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    app:cardCornerRadius="8dp"
+                    android:layout_margin="5dp"
+                    app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/baseline_email_24"
+                            app:tint="#FF0000" />
+
+                        <TextView
+                            android:id="@+id/tvStudentEmail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+
+                            android:textColor="#333333"
+                            android:textSize="16sp" />
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Add other fields similarly -->
+
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

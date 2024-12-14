@@ -67,6 +67,8 @@ dependencies {
     implementation ("com.google.firebase:firebase-firestore:24.8.1")
     implementation ("org.apache.poi:poi:5.2.3")// For reading Excel files
     implementation ("org.apache.poi:poi-ooxml:5.2.3")
+    testImplementation(libs.junit.junit)
+    androidTestImplementation(libs.junit.junit)
 
 }
 
