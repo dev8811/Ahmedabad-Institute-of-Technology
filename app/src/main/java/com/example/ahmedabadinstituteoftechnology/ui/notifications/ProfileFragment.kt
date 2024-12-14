@@ -43,11 +43,16 @@ class ProfileFragment : Fragment() {
                     val email = document.getString("Email")
                     val semester = document.getString("semester")
                     val enrollment = document.getString("enrollmentNo")
+                    val DOB = document.getString("DOB")
+                    val CON_number = document.getString("contact_number")
 
                     binding.tvStudentName.text = name ?: "N/A"
                     binding.tvStudentEmail.text = email ?: "N/A"
                     binding.tvStudentSemester.text = "Semester: ${semester ?: "N/A"}"
                     binding.tvSEnrollment.text = "Enrollment No: ${enrollment ?: "N/A"}"
+                    binding.tvSDOB.text = DOB ?: "N/A"
+                    binding.tvSContactNum.text = "Contact No: ${CON_number ?: "N/A"}"
+
                 } else {
                     Toast.makeText(context, "No such document", Toast.LENGTH_SHORT).show()
                 }

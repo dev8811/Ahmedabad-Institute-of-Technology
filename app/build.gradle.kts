@@ -63,12 +63,18 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    androidTestImplementation ("androidx.test.ext:junit:1.1.1")
     // or another PDF viewer library
     implementation ("com.google.firebase:firebase-firestore:24.8.1")
     implementation ("org.apache.poi:poi:5.2.3")// For reading Excel files
     implementation ("org.apache.poi:poi-ooxml:5.2.3")
     testImplementation(libs.junit.junit)
     androidTestImplementation(libs.junit.junit)
+
+    androidTestImplementation ("androidx.test:core:1.5.0")
+    androidTestImplementation("androidx.test:runner:1.5.2")
+    androidTestImplementation("androidx.test:rules:1.5.0")
+    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
 
 }
 
