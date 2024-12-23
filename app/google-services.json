@@ -1,26 +1,37 @@
 {
   "project_info": {
-    "project_number": "355786611642",
-    "project_id": "ahmedabad-institute",
-    "storage_bucket": "ahmedabad-institute.firebasestorage.app"
+    "project_number": "181429395387",
+    "firebase_url": "https://karmyog-app-default-rtdb.firebaseio.com",
+    "project_id": "karmyog-app",
+    "storage_bucket": "karmyog-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:355786611642:android:c5b7cdfa6d7d3d99c0db83",
+        "mobilesdk_app_id": "1:181429395387:android:32f832823794dbcfb9ee9e",
         "android_client_info": {
           "package_name": "com.example.ahmedabadinstituteoftechnology"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "181429395387-oju5erenhl13u4u4ldj2mbpurmdn3h5f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyDk8jzG_5UKug_-ggq_K4GcGqEJE5bvCDc"
+          "current_key": "AIzaSyCflH8e6tZnyTPagLewcihcXwMy36QXNAw"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "181429395387-oju5erenhl13u4u4ldj2mbpurmdn3h5f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

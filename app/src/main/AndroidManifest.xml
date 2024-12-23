@@ -13,30 +13,24 @@
         android:theme="@style/Theme.AhmedabadInstituteOfTechnology"
         tools:targetApi="30">
 
-        <activity
-            android:name="androidx.test.core.app.InstrumentationActivityInvoker$BootstrapActivity"
-            android:exported="true" />
-        <activity
-            android:name="androidx.test.core.app.InstrumentationActivityInvoker$EmptyActivity"
-            android:exported="true" />
-        <activity
-            android:name="androidx.test.core.app.InstrumentationActivityInvoker$EmptyFloatingActivity"
-            android:exported="true" />
-
-        <activity
-            android:name=".B_navigation_Activity"
-            android:exported="true"
-            android:label="@string/title_activity_bnavigation" />
-
+        <!-- Login Activity as Launcher -->
         <activity
             android:name=".LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Navigation Activity -->
+        <activity
+            android:name=".B_navigation_Activity"
+            android:exported="true"
+            android:label="@string/title_activity_bnavigation" />
+
+        <!-- Other Activities -->
+        <!-- Add only necessary activities here -->
 
     </application>
 

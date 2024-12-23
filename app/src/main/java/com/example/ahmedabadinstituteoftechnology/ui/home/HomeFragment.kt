@@ -1,76 +1,69 @@
 package com.example.ahmedabadinstituteoftechnology.ui.home
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import com.example.ahmedabadinstituteoftechnology.R
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.example.ahmedabadinstituteoftechnology.LoginActivity
 import com.example.ahmedabadinstituteoftechnology.databinding.FragmentHomeBinding
-import com.google.firebase.firestore.FirebaseFirestore
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
+    private val homeViewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        binding.button110.setOnClickListener {addMultipleStudents()  }
+        // Fetch enrollment number from SharedPreferences
+        val enrollmentNumber = LoginActivity.getEnrollmentNumber(requireContext())
+        if (enrollmentNumber != null) {
+            homeViewModel.setEnrollmentNumber(enrollmentNumber)
+        } else {
+            Toast.makeText(context, "Enrollment number not found", Toast.LENGTH_SHORT).show()
+        }
+
+        // Observe data from ViewModel
+        observeViewModel()
+
+        // Set click listener for timetableIMG
+        binding.timetableIMG.setOnClickListener {
+            // Use NavController to navigate
+            findNavController().navigate(R.id.action_navigation_home_to_Timetable_fragment)
+        }
 
         return root
     }
 
+    private fun observeViewModel() {
+        homeViewModel.studentData.observe(viewLifecycleOwner) { student ->
+            binding.profileName.text = "Name: ${student.name}"
+            binding.profileSemester.text = "Semester: ${student.semester}"
+        }
 
-
-    data class Student(
-        val enrollmentNo: String,
-        val name: String,
-        val email: String,
-        val password: String,
-        val semester: String
-    )
-
-    fun addMultipleStudents() {
-        val db = FirebaseFirestore.getInstance()
-
-        // List of students to add
-        val students = listOf(
-            Student("240023107018", "John", "john@gmail.com", "123456", "3"),
-            Student("240023107019", "Alice", "alice@gmail.com", "123456", "3"),
-            Student("240023107020", "Bob", "bob@gmail.com", "123456", "3"),
-            Student("240023107021", "Charlie", "charlie@gmail.com", "123456", "3")
-        )
-
-        // Iterate and add each student to Firestore
-        for (student in students) {
-            db.collection("Student")
-                .document(student.enrollmentNo) // Use enrollment number as document ID
-                .set(student)
-                .addOnSuccessListener {
-                    println("Successfully added student: ${student.name}")
-                }
-                .addOnFailureListener { e ->
-                    println("Error adding student: ${e.message}")
-                }
+        homeViewModel.error.observe(viewLifecycleOwner) { error ->
+            Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
         }
     }
 
-
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+        _binding = null // Avoid memory leaks
     }
 }
+data class Student(
+    val name: String = "",
+    val semester: String = ""
+)

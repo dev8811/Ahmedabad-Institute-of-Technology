@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
     androidTestImplementation ("androidx.test.ext:junit:1.1.1")
     // or another PDF viewer library
     implementation ("com.google.firebase:firebase-firestore:24.8.1")
@@ -75,6 +76,13 @@ dependencies {
     androidTestImplementation("androidx.test:runner:1.5.2")
     androidTestImplementation("androidx.test:rules:1.5.0")
     androidTestImplementation ("androidx.test.ext:junit:1.1.5")
+
+    implementation ("androidx.recyclerview:recyclerview:1.3.1")
+    implementation("androidx.cardview:cardview:1.0.0")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+
+
+
 
 }
 

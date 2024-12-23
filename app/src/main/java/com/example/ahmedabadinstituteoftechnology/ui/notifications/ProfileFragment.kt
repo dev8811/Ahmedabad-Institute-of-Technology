@@ -1,19 +1,22 @@
 package com.example.ahmedabadinstituteoftechnology.ui.notifications
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import com.example.ahmedabadinstituteoftechnology.LoginActivity
 import com.example.ahmedabadinstituteoftechnology.databinding.FragmentNotificationsBinding
-import com.google.firebase.firestore.FirebaseFirestore
 
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentNotificationsBinding? = null
     private val binding get() = _binding!!
-    private val firestore = FirebaseFirestore.getInstance()
+    private val profileViewModel: ProfileViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -21,44 +24,36 @@ class ProfileFragment : Fragment() {
         _binding = FragmentNotificationsBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        // Get enrollment number from arguments
-        val enrollmentNumber = arguments?.getString("enrollment_number")
-
-
+        // Get enrollment number from SharedPreferences
+        val enrollmentNumber = LoginActivity.getEnrollmentNumber(requireContext())
         if (enrollmentNumber != null) {
-            fetchProfileData(enrollmentNumber)
+            profileViewModel.setEnrollmentNumber(enrollmentNumber)
         } else {
-            Toast.makeText(context, "Error: Enrollment number not found", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Enrollment number not found", Toast.LENGTH_SHORT).show()
         }
+
+
+        observeViewModel()
 
         return root
     }
 
-    private fun fetchProfileData(enrollmentNumber: String) {
-        val studentRef = firestore.collection("Student").document(enrollmentNumber)
+    private fun observeViewModel() {
+        profileViewModel.profileData.observe(viewLifecycleOwner) { profile ->
+            binding.tvStudentName.text = profile.name
+            binding.tvStudentEmail.text = "Email : ${profile.email}"
+            binding.tvStudentSemester.text = "Semester : ${profile.semester}"
+            binding.tvStudentEnrollment.text = "Enrollment No : ${profile.enrollment}"
+            binding.tvStudentDOB.text = "Date of Birth : ${profile.dateOfBirth}"
+            binding.tvStudentContact.text = "Contact No : ${profile.contactNumber}"
+            binding.tvStudentBranch.text = "Branch : ${profile.branch}"
+            binding.tvPerentContact.text = "Parent Contact No : ${profile.parent_Number}"
+            binding.tvStudentABCID.text = "ABC ID : ${profile.abc_id}"
+        }
 
-        studentRef.get().addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val name = document.getString("name")
-                    val email = document.getString("Email")
-                    val semester = document.getString("semester")
-                    val enrollment = document.getString("enrollmentNo")
-                    val DOB = document.getString("DOB")
-                    val CON_number = document.getString("contact_number")
-
-                    binding.tvStudentName.text = name ?: "N/A"
-                    binding.tvStudentEmail.text = email ?: "N/A"
-                    binding.tvStudentSemester.text = "Semester: ${semester ?: "N/A"}"
-                    binding.tvSEnrollment.text = "Enrollment No: ${enrollment ?: "N/A"}"
-                    binding.tvSDOB.text = DOB ?: "N/A"
-                    binding.tvSContactNum.text = "Contact No: ${CON_number ?: "N/A"}"
-
-                } else {
-                    Toast.makeText(context, "No such document", Toast.LENGTH_SHORT).show()
-                }
-            }.addOnFailureListener { exception ->
-                Toast.makeText(context, "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
-            }
+        profileViewModel.error.observe(viewLifecycleOwner) { error ->
+            Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+        }
     }
 
     override fun onDestroyView() {
