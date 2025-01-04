@@ -25,4 +25,8 @@
     <string name="title_dashboard">Notice board</string>
     <string name="title_notifications">Profile</string>
     <string name="profile_image" />
+    <string name="title_timetable">Time table\n</string>
+    <string name="title_upload">MY COURSE</string>
+    <string name="select_semester">select_semester</string>
+    <string name="upload_pdf">upload_pdf</string>
 </resources>

@@ -38,11 +38,20 @@ class HomeFragment : Fragment() {
         // Observe data from ViewModel
         observeViewModel()
 
-        // Set click listener for timetableIMG
-        binding.timetableIMG.setOnClickListener {
-            // Use NavController to navigate
+        // Define navigation actions
+        val navigateToTimetable = View.OnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_Timetable_fragment)
         }
+
+        val navigateToMyCourse = View.OnClickListener {
+            findNavController().navigate(R.id.action_navigation_home_to_MY_course_fragment)
+        }
+
+// Set click listeners
+        binding.timetableIMG.setOnClickListener(navigateToTimetable)
+        binding.timeTableCard.setOnClickListener(navigateToTimetable)
+      //  binding.myCourseImg.setOnClickListener(navigateToMyCourse) // Assuming you have an image or button for "My Course"
+      //  binding.myCourseCard.setOnClickListener(navigateToMyCourse) // Assuming you have a card for "My Course"
 
         return root
     }
