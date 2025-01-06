@@ -36,7 +36,7 @@ class TimetableFragment : Fragment() {
         }
 
         // Set up semester Spinner
-        val semesters = listOf("Select Semester", "Semester 1", "Semester 2", "Semester 3", "Semester 4")
+        val semesters = listOf("Select Semester", "Semester 1", "Semester 2", "Semester 3", "Semester 4", "Semester 5", "Semester 6", "Semester 7", "Semester 8")
         val spinnerAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, semesters)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.semesterSpinner.adapter = spinnerAdapter
@@ -66,6 +66,15 @@ class TimetableFragment : Fragment() {
         storageReference.child("timetables/$semester").listAll()
             .addOnSuccessListener { listResult ->
                 val timetables = mutableListOf<Pair<String, String>>()
+
+                // Check if the list of items is empty
+                if (listResult.items.isEmpty()) {
+                    progressDialog.dismiss()
+                    Toast.makeText(requireContext(), "No timetables available for $semester", Toast.LENGTH_SHORT).show()
+                    timetableAdapter.updateData(emptyList()) // Clear the RecyclerView
+                    return@addOnSuccessListener
+                }
+
                 val tasks = listResult.items.map { item ->
                     item.downloadUrl.addOnSuccessListener { uri ->
                         timetables.add(item.name to uri.toString())
@@ -89,6 +98,7 @@ class TimetableFragment : Fragment() {
                 Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
             }
     }
+
 
 
     private fun downloadPDF(fileName: String, downloadUrl: String) {

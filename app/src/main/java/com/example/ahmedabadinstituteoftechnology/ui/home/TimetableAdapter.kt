@@ -6,12 +6,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.ahmedabadinstituteoftechnology.databinding.ItemTimetableBinding
 
 class TimetableAdapter(
-    private val onDownloadClick: (String, String) -> Unit
+    private val onDownloadClick: (fileName: String, downloadUrl: String) -> Unit
 ) : RecyclerView.Adapter<TimetableAdapter.TimetableViewHolder>() {
 
     private val timetableList = mutableListOf<Pair<String, String>>()
 
-    fun updateData(newList: MutableList<Pair<String, String>>) {
+    /**
+     * Updates the data in the adapter and refreshes the RecyclerView.
+     */
+    fun updateData(newList: List<Pair<String, String>>) {
         timetableList.clear()
         timetableList.addAll(newList)
         notifyDataSetChanged()
@@ -23,16 +26,22 @@ class TimetableAdapter(
     }
 
     override fun onBindViewHolder(holder: TimetableViewHolder, position: Int) {
-        val (fileName, downloadUrl) = timetableList[position]
-        holder.bind(fileName, downloadUrl)
+        holder.bind(timetableList[position])
     }
 
-    override fun getItemCount() = timetableList.size
+    override fun getItemCount(): Int = timetableList.size
 
+    /**
+     * ViewHolder class for timetable items.
+     */
     inner class TimetableViewHolder(private val binding: ItemTimetableBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(fileName: String, downloadUrl: String) {
+        /**
+         * Binds the data to the views.
+         */
+        fun bind(item: Pair<String, String>) {
+            val (fileName, downloadUrl) = item
             binding.tvTimetableName.text = fileName
             binding.btnDownload.setOnClickListener { onDownloadClick(fileName, downloadUrl) }
         }
