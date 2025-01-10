@@ -23,6 +23,21 @@
         <action
             android:id="@+id/action_navigation_home_to_navigation_attendance"
             app:destination="@id/navigation_attendance" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_result"
+            app:destination="@id/navigation_result" />
+        <action
+            android:id="@+id/action_navigation_home_to_assignnmentsFragment"
+            app:destination="@id/assignnmentsFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_eventFragment"
+            app:destination="@id/eventFragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_my_Course_Fragment"
+            app:destination="@id/my_Course_Fragment" />
+        <action
+            android:id="@+id/action_navigation_home_to_exam_scheduleFragment"
+            app:destination="@id/exam_scheduleFragment" />
 
     </fragment>
 
@@ -53,4 +68,30 @@
         android:name="com.example.ahmedabadinstituteoftechnology.ui.home.AttendanceFragment"
         android:label="attendance"
         tools:layout="@layout/fragment_attendance_" />
+
+    <fragment
+        android:id="@+id/navigation_result"
+        android:name="com.example.ahmedabadinstituteoftechnology.ui.home.ResultFragment"
+        android:label="Result"
+        tools:layout="@layout/fragment_result" />
+    <fragment
+        android:id="@+id/assignnmentsFragment"
+        android:name="com.example.ahmedabadinstituteoftechnology.ui.home.AssignnmentsFragment"
+        android:label="fragment_assignnments"
+        tools:layout="@layout/fragment_assignnments" />
+    <fragment
+        android:id="@+id/eventFragment"
+        android:name="com.example.ahmedabadinstituteoftechnology.ui.home.EventFragment"
+        android:label="fragment_event"
+        tools:layout="@layout/fragment_event" />
+    <fragment
+        android:id="@+id/exam_scheduleFragment"
+        android:name="com.example.ahmedabadinstituteoftechnology.ui.home.Exam_scheduleFragment"
+        android:label="fragment_exam_schedule"
+        tools:layout="@layout/fragment_exam_schedule" />
+    <fragment
+        android:id="@+id/my_Course_Fragment"
+        android:name="com.example.ahmedabadinstituteoftechnology.ui.home.My_Course_Fragment"
+        android:label="fragment_my__course_"
+        tools:layout="@layout/fragment_my__course_" />
 </navigation>

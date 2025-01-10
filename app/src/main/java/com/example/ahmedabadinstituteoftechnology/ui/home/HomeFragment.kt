@@ -44,13 +44,18 @@ class HomeFragment : Fragment() {
         val navigateToattendance = View.OnClickListener {
             findNavController().navigate(R.id.action_navigation_home_to_navigation_attendance)
         }
+        val navigateToResult = View.OnClickListener {
+            findNavController().navigate(R.id.action_navigation_home_to_navigation_result)
+        }
 
 
 // Set click listeners
+        binding.resultsIMG.setOnClickListener(navigateToResult)
+        binding.resultsIMG.setOnClickListener(navigateToResult)
         binding.timetableIMG.setOnClickListener(navigateToTimetable)
         binding.timeTableCard.setOnClickListener(navigateToTimetable)
-        binding.attendanceIMG.setOnClickListener(navigateToattendance) // Assuming you have an image or button for "My Course"
-        binding.attendanceCARD.setOnClickListener(navigateToattendance) // Assuming you have a card for "My Course"
+        binding.attendanceCARD.setOnClickListener(navigateToattendance) // Assuming you have an image or button for "My Course"
+        binding.attendanceIMG.setOnClickListener(navigateToattendance) // Assuming you have a card for "My Course"
 
         return root
     }

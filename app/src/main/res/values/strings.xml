@@ -29,4 +29,11 @@
     <string name="title_upload">MY COURSE</string>
     <string name="select_semester">select_semester</string>
     <string name="upload_pdf">upload_pdf</string>
+    <string name="timetable">Timetable</string>
+    <string name="attendance">Attendance</string>
+    <string name="results">Results</string>
+    <string name="my_course">My course</string>
+    <string name="exam_schedule">Exam schedule</string>
+    <string name="events">Events</string>
+    <string name="assignments">Assignments</string>
 </resources>

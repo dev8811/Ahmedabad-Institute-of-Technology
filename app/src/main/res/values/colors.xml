@@ -4,5 +4,9 @@
     <color name="white">#FFFFFFFF</color>
     <color name="blue">#0018FF</color>
     <color name="bg_Notice">#D60C0C</color>
+    <color name="yelow">#FFC900</color>
     <color name="primaryColor">#FF0000</color>
+    <color name="red">#F44336</color>
+    <color name="gray">#E0E0E0</color>
+
 </resources>
