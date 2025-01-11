@@ -1,12 +1,11 @@
 package com.example.ahmedabadinstituteoftechnology.ui.notifications
 
-import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.ahmedabadinstituteoftechnology.LoginActivity
@@ -32,10 +31,25 @@ class ProfileFragment : Fragment() {
             Toast.makeText(context, "Enrollment number not found", Toast.LENGTH_SHORT).show()
         }
 
+        // Set up the logout button
+        binding.btnLogout.setOnClickListener {
+            logoutUser()
+        }
 
         observeViewModel()
 
         return root
+    }
+
+    private fun logoutUser() {
+        LoginActivity.logoutUser(requireContext())
+        Toast.makeText(context, "Logged out successfully", Toast.LENGTH_SHORT).show()
+
+        // Navigate back to the LoginActivity
+        val intent = Intent(requireContext(), LoginActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+        requireActivity().finish()
     }
 
     private fun observeViewModel() {

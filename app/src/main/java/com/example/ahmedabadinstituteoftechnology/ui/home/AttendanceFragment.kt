@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.ahmedabadinstituteoftechnology.LoginActivity
 import com.example.ahmedabadinstituteoftechnology.databinding.FragmentAttendanceBinding
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
@@ -21,36 +22,39 @@ class AttendanceFragment : Fragment() {
     private val calendar = Calendar.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
 
-    private var studentId = "240023107017" // Replace with dynamic student ID if needed
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAttendanceBinding.inflate(inflater, container, false)
 
-        setupCalendar()
-        setupNavigation()
+        val enrollmentNumber = LoginActivity.getEnrollmentNumber(requireContext())
+        if (enrollmentNumber != null) {
+            setupCalendar(enrollmentNumber)
+            setupNavigation(enrollmentNumber)
+        } else {
+            Toast.makeText(context, "Enrollment number not found", Toast.LENGTH_SHORT).show()
+        }
 
         return binding.root
     }
 
-    private fun setupNavigation() {
+    private fun setupNavigation(enrollmentNumber: String) {
         binding.prevMonth.setOnClickListener {
             calendar.add(Calendar.MONTH, -1)
-            setupCalendar()
+            setupCalendar(enrollmentNumber)
         }
 
         binding.nextMonth.setOnClickListener {
             calendar.add(Calendar.MONTH, 1)
-            setupCalendar()
+            setupCalendar(enrollmentNumber)
         }
     }
 
     @SuppressLint("SetTextI18n")
-    private fun setupCalendar() {
+    private fun setupCalendar(enrollmentNumber: String) {
         updateMonthText()
-        fetchAttendanceData { attendance ->
+        fetchAttendanceData(enrollmentNumber) { attendance ->
             val daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
             val firstDayOfMonth = calendar.apply { set(Calendar.DAY_OF_MONTH, 1) }.get(Calendar.DAY_OF_WEEK) - 1
 
@@ -67,7 +71,7 @@ class AttendanceFragment : Fragment() {
                 val status = when {
                     isWeekend(day) -> "holiday"
                     attendance.containsKey(dateKey) -> attendance[dateKey] ?: "absent"
-                    else -> "absent"
+                    else -> "default"
                 }
                 daysList.add(DayItem(day.toString(), status))
             }
@@ -86,9 +90,11 @@ class AttendanceFragment : Fragment() {
         binding.monthText.text = dateFormat.format(calendar.time)
     }
 
-    private fun fetchAttendanceData(callback: (Map<String, String>) -> Unit) {
+    private fun fetchAttendanceData(enrollmentNumber: String, callback: (Map<String, String>) -> Unit) {
         val monthKey = String.format("%04d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
-        val attendanceCollection = firestore.collection("Student").document(studentId).collection("Attendance")
+        val attendanceCollection = firestore.collection("Student")
+            .document(enrollmentNumber)
+            .collection("Attendance")
 
         attendanceCollection.document(monthKey).get()
             .addOnSuccessListener { document ->
@@ -97,7 +103,7 @@ class AttendanceFragment : Fragment() {
                     val attendance = document.data?.mapValues { it.value.toString() } ?: emptyMap()
                     callback(attendance)
                 } else {
-                    callback(emptyMap())
+                    callback(emptyMap()) // No data for the month
                 }
             }
             .addOnFailureListener {

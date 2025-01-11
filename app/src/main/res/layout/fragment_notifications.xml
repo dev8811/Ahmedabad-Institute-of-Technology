@@ -4,14 +4,14 @@
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         tools:context=".ProfileActivity">
 
         <!-- Header Section -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/_150sdp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:gravity="center"
             android:background="@drawable/gradient_background"
@@ -31,27 +31,43 @@
                 android:id="@+id/tvStudentName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="11dp"
+                android:layout_marginTop="@dimen/_5sdp"
                 android:text=""
-                android:textSize="22sp"
+                android:textSize="@dimen/_18sdp"
                 android:textColor="@color/white"
                 android:textStyle="bold" />
 
-            <!-- Subtitle -->
-            <TextView
-                android:id="@+id/tvStudentBranch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:textSize="16sp"
-                android:textColor="@color/white"
-                android:layout_marginTop="4dp" />
+
+                <!-- Branch Text -->
+                <TextView
+                    android:id="@+id/tvStudentBranch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:text=""
+                    android:textSize="@dimen/_12sdp"
+                    android:textColor="@color/white"
+                    android:textStyle="bold" />
+
+                <!-- Logout Button -->
+                <Button
+                    android:id="@+id/btnLogout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:backgroundTint="@color/white"
+                    android:text="Logout"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:textColor="@android:color/black" />
+
+
         </LinearLayout>
+
 
         <!-- Profile Details Section -->
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="220dp"
             android:background="@android:color/white"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">

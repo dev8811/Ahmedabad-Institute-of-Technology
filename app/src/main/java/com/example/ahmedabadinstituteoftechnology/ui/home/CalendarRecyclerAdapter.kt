@@ -30,16 +30,20 @@ class CalendarRecyclerAdapter(
 
         when (dayItem.status) {
             "present" -> {
-                holder.dayText.setBackgroundColor(Color.parseColor("#4CAF50")) // Green
+                holder.dayText.setBackgroundColor(Color.GREEN)
                 holder.dayText.setTextColor(Color.WHITE)
             }
             "absent" -> {
-                holder.dayText.setBackgroundColor(Color.parseColor("#F44336")) // Red
+                holder.dayText.setBackgroundColor(Color.RED)
                 holder.dayText.setTextColor(Color.WHITE)
             }
             "holiday" -> {
-                holder.dayText.setBackgroundColor(Color.parseColor("#9E9E9E")) // Gray
-                holder.dayText.setTextColor(Color.WHITE)
+                holder.dayText.setBackgroundColor(Color.GRAY)
+                holder.dayText.setTextColor(Color.BLACK)
+            }
+            "default" -> {
+                holder.dayText.setBackgroundColor(Color.WHITE)
+                holder.dayText.setTextColor(Color.BLACK)
             }
             "empty" -> {
                 holder.dayText.setBackgroundColor(Color.TRANSPARENT)
@@ -50,6 +54,7 @@ class CalendarRecyclerAdapter(
 
     override fun getItemCount(): Int = daysList.size
 }
+
 
 data class DayItem(
     val day: String,
