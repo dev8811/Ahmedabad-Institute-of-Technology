@@ -30,24 +30,20 @@ class CalendarRecyclerAdapter(
 
         when (dayItem.status) {
             "present" -> {
-                holder.dayText.setBackgroundColor(Color.GREEN)
+                holder.dayText.setBackgroundColor(Color.parseColor("#4CAF50")) // Green
                 holder.dayText.setTextColor(Color.WHITE)
             }
             "absent" -> {
-                holder.dayText.setBackgroundColor(Color.RED)
+                holder.dayText.setBackgroundColor(Color.parseColor("#F44336")) // Red
                 holder.dayText.setTextColor(Color.WHITE)
             }
             "holiday" -> {
-                holder.dayText.setBackgroundColor(Color.GRAY)
+                holder.dayText.setBackgroundColor(Color.parseColor("#9E9E9E")) // Gray
                 holder.dayText.setTextColor(Color.WHITE)
             }
             "empty" -> {
                 holder.dayText.setBackgroundColor(Color.TRANSPARENT)
                 holder.dayText.text = ""
-            }
-            else -> {
-                holder.dayText.setBackgroundColor(Color.TRANSPARENT)
-                holder.dayText.setTextColor(Color.BLACK)
             }
         }
     }
