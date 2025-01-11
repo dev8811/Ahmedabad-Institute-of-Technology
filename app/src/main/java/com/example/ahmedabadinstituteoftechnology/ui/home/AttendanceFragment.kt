@@ -1,5 +1,6 @@
 package com.example.ahmedabadinstituteoftechnology.ui.home
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,14 +18,10 @@ class AttendanceFragment : Fragment() {
     private var _binding: FragmentAttendanceBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var firestore: FirebaseFirestore
-    private val attendanceData = mutableMapOf<String, String>()
     private val calendar = Calendar.getInstance()
+    private val firestore = FirebaseFirestore.getInstance()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        firestore = FirebaseFirestore.getInstance()
-    }
+    private var studentId = "240023107017" // Replace with dynamic student ID if needed
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,24 +29,56 @@ class AttendanceFragment : Fragment() {
     ): View {
         _binding = FragmentAttendanceBinding.inflate(inflater, container, false)
 
-        // Setup RecyclerView
-        binding.calendarRecycler.layoutManager = GridLayoutManager(requireContext(), 7) // 7 days in a week
-        updateMonthText()
-        loadAttendanceData()
+        setupCalendar()
+        setupNavigation()
 
+        return binding.root
+    }
+
+    private fun setupNavigation() {
         binding.prevMonth.setOnClickListener {
             calendar.add(Calendar.MONTH, -1)
-            updateMonthText()
-            loadAttendanceData()
+            setupCalendar()
         }
 
         binding.nextMonth.setOnClickListener {
             calendar.add(Calendar.MONTH, 1)
-            updateMonthText()
-            loadAttendanceData()
+            setupCalendar()
         }
+    }
 
-        return binding.root
+    @SuppressLint("SetTextI18n")
+    private fun setupCalendar() {
+        updateMonthText()
+        fetchAttendanceData { attendance ->
+            val daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+            val firstDayOfMonth = calendar.apply { set(Calendar.DAY_OF_MONTH, 1) }.get(Calendar.DAY_OF_WEEK) - 1
+
+            val daysList = mutableListOf<DayItem>()
+
+            // Add empty items for days before the first day of the month
+            repeat(firstDayOfMonth) {
+                daysList.add(DayItem("", "empty"))
+            }
+
+            // Add days of the month with attendance statuses
+            for (day in 1..daysInMonth) {
+                val dateKey = String.format("%04d-%02d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1, day)
+                val status = when {
+                    isWeekend(day) -> "holiday"
+                    attendance.containsKey(dateKey) -> attendance[dateKey] ?: "absent"
+                    else -> "absent"
+                }
+                daysList.add(DayItem(day.toString(), status))
+            }
+
+            // Bind data to RecyclerView
+            val adapter = CalendarRecyclerAdapter(requireContext(), daysList)
+            binding.calendarRecycler.layoutManager = GridLayoutManager(requireContext(), 7)
+            binding.calendarRecycler.adapter = adapter
+
+            updateSummary(attendance, daysInMonth)
+        }
     }
 
     private fun updateMonthText() {
@@ -57,53 +86,38 @@ class AttendanceFragment : Fragment() {
         binding.monthText.text = dateFormat.format(calendar.time)
     }
 
-    private fun loadAttendanceData() {
-        val dateFormat = SimpleDateFormat("yyyy-MM", Locale.getDefault())
-        val monthKey = dateFormat.format(calendar.time)
+    private fun fetchAttendanceData(callback: (Map<String, String>) -> Unit) {
+        val monthKey = String.format("%04d-%02d", calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH) + 1)
+        val attendanceCollection = firestore.collection("Student").document(studentId).collection("Attendance")
 
-        firestore.collection("attendance").document(monthKey)
-            .get()
+        attendanceCollection.document(monthKey).get()
             .addOnSuccessListener { document ->
-                attendanceData.clear()
-                attendanceData.putAll(document?.data?.mapValues { it.value.toString() } ?: emptyMap())
-                setupCalendar()
+                if (document.exists()) {
+                    // Convert Firestore data to a map
+                    val attendance = document.data?.mapValues { it.value.toString() } ?: emptyMap()
+                    callback(attendance)
+                } else {
+                    callback(emptyMap())
+                }
             }
             .addOnFailureListener {
-                Toast.makeText(context, "Failed to fetch data", Toast.LENGTH_SHORT).show()
-                attendanceData.clear()
-                setupCalendar()
+                Toast.makeText(context, "Failed to fetch attendance data", Toast.LENGTH_SHORT).show()
+                callback(emptyMap())
             }
     }
 
-    private fun setupCalendar() {
-        val daysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val firstDayOfMonth = calendar.apply { set(Calendar.DAY_OF_MONTH, 1) }.get(Calendar.DAY_OF_WEEK) - 1
-        val daysList = mutableListOf<DayItem>()
-
-        // Add "empty" items for days before the first day of the month
-        repeat(firstDayOfMonth) {
-            daysList.add(DayItem("", "empty"))
-        }
-
-        // Add days of the month with attendance statuses
-        for (day in 1..daysInMonth) {
-            val dayKey = day.toString().padStart(1, '0')
-            val status = attendanceData[dayKey] ?: "holiday"
-            daysList.add(DayItem(day.toString(), status))
-        }
-
-        // Bind data to RecyclerView
-        val adapter = CalendarRecyclerAdapter(requireContext(), daysList)
-        binding.calendarRecycler.adapter = adapter
-
-        updateSummary()
+    private fun isWeekend(day: Int): Boolean {
+        val tempCalendar = calendar.clone() as Calendar
+        tempCalendar.set(Calendar.DAY_OF_MONTH, day)
+        val dayOfWeek = tempCalendar.get(Calendar.DAY_OF_WEEK)
+        return dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY
     }
 
-    private fun updateSummary() {
-        val presentCount = attendanceData.values.count { it == "present" }
-        val absentCount = attendanceData.values.count { it == "absent" }
-        val totalDays = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
-        val holidaysCount = totalDays - (presentCount + absentCount)
+    @SuppressLint("SetTextI18n")
+    private fun updateSummary(attendance: Map<String, String>, totalDays: Int) {
+        val presentCount = attendance.values.count { it == "present" }
+        val absentCount = attendance.values.count { it == "absent" }
+        val holidaysCount = (1..totalDays).count { isWeekend(it) }
 
         binding.summaryPresent.text = "Present: $presentCount"
         binding.summaryAbsent.text = "Absent: $absentCount"

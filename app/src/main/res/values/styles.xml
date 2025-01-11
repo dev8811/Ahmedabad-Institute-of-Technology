@@ -1,10 +1,9 @@
 <resources>
     <!-- Style for CardView -->
-    <style name="CardViewStyle">
-        <item name="cardCornerRadius">12dp</item>
-        <item name="cardElevation">6dp</item>
-        <item name="android:layout_margin">8dp</item>
-        <item name="android:background">@color/white</item>
+    <style name="ButtonIMG">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:tint">@color/primaryColor</item>
     </style>
 
     <!-- Text Style for Titles inside Cards -->
@@ -16,10 +15,13 @@
     </style>
 
     <!-- Style for Images inside Cards -->
-    <style name="CardImageStyle">
-        <item name="android:layout_width">50dp</item>
-        <item name="android:layout_height">50dp</item>
-        <item name="android:background">@color/white</item>
-        <item name="android:tint">@color/primaryColor</item>
+    <style name="CardView">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">100dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardElevation">4dp</item>
+
     </style>
 </resources>

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@color/white">
 
     <!-- Month Navigation -->
     <LinearLayout
@@ -12,6 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="@dimen/_22sdp"
+        android:background="@color/white"
         android:padding="16dp"
         android:gravity="center_horizontal">
 
@@ -28,11 +30,11 @@
             android:id="@+id/month_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginVertical="8dp"
+            android:layout_marginHorizontal="@dimen/_22sdp"
             android:text="December 2024"
             android:textColor="#000000"
-            android:textSize="18sp"
+            android:layout_marginTop="@dimen/_3sdp"
+            android:textSize="20sp"
             android:textStyle="bold" />
 
         <ImageView
@@ -49,15 +51,15 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/calendar_recycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_height="0dp"
+        android:padding="@dimen/_7sdp"
         android:layout_below="@id/month_navigation"
-        android:clipToPadding="false"
-        android:padding="5dp"
-        android:background="#FFFFFF"
-        android:elevation="4dp"
+        android:layout_above="@id/attendance_summary"
+        android:layout_weight="1"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        app:spanCount="10" />
+        app:spanCount="7"
+        android:background="#FFFFFF"
+        android:elevation="0dp" />
 
     <!-- Attendance Summary -->
     <LinearLayout
@@ -72,27 +74,27 @@
 
         <TextView
             android:id="@+id/summary_present"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Present: 20"
+            android:text="Present: 0"
             android:textColor="#4CAF50"
             android:textSize="16sp"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/summary_absent"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Absent: 5"
+            android:text="Absent: 0"
             android:textColor="#F44336"
             android:textSize="16sp"
             android:layout_weight="1" />
 
         <TextView
             android:id="@+id/summary_holidays"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Holidays: 6"
+            android:text="Holidays: 0"
             android:textColor="#9E9E9E"
             android:textSize="16sp"
             android:layout_weight="1" />

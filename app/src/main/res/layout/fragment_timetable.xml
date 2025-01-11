@@ -20,11 +20,12 @@
             android:id="@+id/semesterSpinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:tooltipText="helow"
             android:padding="12dp"
             android:background="@drawable/spinner_background"
             android:popupBackground="@color/white"
             android:textAlignment="center"
-            android:spinnerMode="dropdown" />
+            android:spinnerMode="dropdown"/>
     </androidx.cardview.widget.CardView>
 
     <!-- RecyclerView -->

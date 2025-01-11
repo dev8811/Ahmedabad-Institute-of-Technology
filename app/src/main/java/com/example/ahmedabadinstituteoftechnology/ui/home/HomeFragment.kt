@@ -12,7 +12,8 @@ import com.example.ahmedabadinstituteoftechnology.LoginActivity
 import com.example.ahmedabadinstituteoftechnology.R
 import com.example.ahmedabadinstituteoftechnology.databinding.FragmentHomeBinding
 
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment()
+{
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
@@ -24,50 +25,61 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        // Fetch enrollment number from SharedPreferences
-        val enrollmentNumber = LoginActivity.getEnrollmentNumber(requireContext())
-        if (enrollmentNumber != null) {
+        // Fetch enrollment number and set it in ViewModel
+        LoginActivity.getEnrollmentNumber(requireContext())?.let { enrollmentNumber ->
             homeViewModel.setEnrollmentNumber(enrollmentNumber)
-        } else {
+        } ?: run {
             Toast.makeText(context, "Enrollment number not found", Toast.LENGTH_SHORT).show()
         }
 
         // Observe data from ViewModel
         observeViewModel()
 
-        // Define navigation actions
-        val navigateToTimetable = View.OnClickListener {
-            findNavController().navigate(R.id.action_navigation_home_to_Timetable_fragment)
-        }
-        val navigateToattendance = View.OnClickListener {
-            findNavController().navigate(R.id.action_navigation_home_to_navigation_attendance)
-        }
-        val navigateToResult = View.OnClickListener {
-            findNavController().navigate(R.id.action_navigation_home_to_navigation_result)
-        }
+        // Set up navigation
+        setupNavigation()
 
+        return binding.root
+    }
 
-// Set click listeners
-        binding.resultsIMG.setOnClickListener(navigateToResult)
-        binding.resultsIMG.setOnClickListener(navigateToResult)
-        binding.timetableIMG.setOnClickListener(navigateToTimetable)
-        binding.timeTableCard.setOnClickListener(navigateToTimetable)
-        binding.attendanceCARD.setOnClickListener(navigateToattendance) // Assuming you have an image or button for "My Course"
-        binding.attendanceIMG.setOnClickListener(navigateToattendance) // Assuming you have a card for "My Course"
+    private fun setupNavigation() {
+        // Map views to navigation actions
+        val navigationMap = mapOf(
+            binding.timetableIMG to R.id.action_navigation_home_to_Timetable_fragment,
+            binding.timeTableCard to R.id.action_navigation_home_to_Timetable_fragment,
+            binding.attendanceCARD to R.id.action_navigation_home_to_navigation_attendance,
+            binding.attendanceIMG to R.id.action_navigation_home_to_navigation_attendance,
+            binding.resultsIMG to R.id.action_navigation_home_to_navigation_result,
+            binding.MyCourseCARD to R.id.action_navigation_home_to_my_Course_Fragment,
+            binding.MyCourseIMG to R.id.action_navigation_home_to_my_Course_Fragment,
+            binding.EventsCARD to R.id.action_navigation_home_to_eventFragment,
+            binding.EventsIMG to R.id.action_navigation_home_to_eventFragment,
+            binding.AssignmentsCARD to R.id.action_navigation_home_to_assignnmentsFragment,
+            binding.AssignmentsIMG to R.id.action_navigation_home_to_assignnmentsFragment,
+            binding.ExamScheduleCARD to R.id.action_navigation_home_to_exam_scheduleFragment,
+            binding.ExamScheduleIMG to R.id.action_navigation_home_to_exam_scheduleFragment
+        )
 
-        return root
+        // Assign click listeners using a loop
+        navigationMap.forEach { (view, actionId) ->
+            view.setOnClickListener {
+                findNavController().navigate(actionId)
+            }
+        }
     }
 
     private fun observeViewModel() {
         homeViewModel.studentData.observe(viewLifecycleOwner) { student ->
-            binding.profileName.text = "Name: ${student.name}"
-            binding.profileSemester.text = "Semester: ${student.semester}"
+            student?.let {
+                binding.profileName.text = "Name: ${it.name}"
+                binding.profileSemester.text = "Semester: ${it.semester}"
+            }
         }
 
         homeViewModel.error.observe(viewLifecycleOwner) { error ->
-            Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+            error?.let {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
