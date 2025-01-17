@@ -44,7 +44,6 @@ class TimetableFragment : Fragment() {
     )
 
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
@@ -83,10 +82,7 @@ class TimetableFragment : Fragment() {
         binding.semesterSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
-                    parent: AdapterView<*>,
-                    view: View?,
-                    position: Int,
-                    id: Long
+                    parent: AdapterView<*>, view: View?, position: Int, id: Long
                 ) {
                     if (position != 0 && branchName != null) {
                         val selectedSemester = semesters[position]
@@ -119,14 +115,18 @@ class TimetableFragment : Fragment() {
         progressDialog.show()
 
         val path = "timetables/$branch/$semester/"
-  // Encoding spaces in path
+        // Encoding spaces in path
 
         storageReference.child(path).listAll().addOnSuccessListener { listResult ->
             val timetables = mutableListOf<Pair<String, String>>()
 
             if (listResult.items.isEmpty()) {
                 progressDialog.dismiss()
-                Toast.makeText(requireContext(), "No timetables available for $semester", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "No timetables available for $semester",
+                    Toast.LENGTH_SHORT
+                ).show()
                 timetableAdapter.updateData(emptyList())
                 return@addOnSuccessListener
             }
@@ -143,13 +143,19 @@ class TimetableFragment : Fragment() {
                     }
                 }.addOnFailureListener { exception ->
                     progressDialog.dismiss()
-                    Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Error: ${exception.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }.addOnFailureListener { exception ->
             progressDialog.dismiss()
-            Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_SHORT).show()
-        }}
+            Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_SHORT)
+                .show()
+        }
+    }
 
 
     @SuppressLint("Range")
@@ -187,11 +193,9 @@ class TimetableFragment : Fragment() {
                             requireActivity().runOnUiThread {
                                 progressDialog.dismiss()
                                 Toast.makeText(
-                                    requireContext(),
-                                    "Downloaded to ${
+                                    requireContext(), "Downloaded to ${
                                         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).absolutePath
-                                    }/$fileName",
-                                    Toast.LENGTH_LONG
+                                    }/$fileName", Toast.LENGTH_LONG
                                 ).show()
                             }
                         }
@@ -201,9 +205,7 @@ class TimetableFragment : Fragment() {
                             requireActivity().runOnUiThread {
                                 progressDialog.dismiss()
                                 Toast.makeText(
-                                    requireContext(),
-                                    "Download failed",
-                                    Toast.LENGTH_LONG
+                                    requireContext(), "Download failed", Toast.LENGTH_LONG
                                 ).show()
                             }
                         }
@@ -214,6 +216,7 @@ class TimetableFragment : Fragment() {
             }
         }.start()
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()
