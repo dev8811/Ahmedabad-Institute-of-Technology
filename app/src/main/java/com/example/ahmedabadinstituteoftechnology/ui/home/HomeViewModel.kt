@@ -18,15 +18,25 @@ class HomeViewModel : ViewModel() {
     }
 
     private fun fetchStudentData(enrollmentNumber: String) {
-        FirebaseFirestore.getInstance().collection("Student")
+        // Query the Profile subcollection for the first document
+        FirebaseFirestore.getInstance()
+            .collection("Student")
             .document(enrollmentNumber)
+            .collection("Profile")
             .get()
-            .addOnSuccessListener { document ->
-                if (document.exists()) {
-                    val student = document.toObject(Student::class.java)
-                    _studentData.postValue(student)
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    // Get the first document from the Profile subcollection
+                    val firstDocument = querySnapshot.documents.firstOrNull()
+                    if (firstDocument != null) {
+                        // Map the document data to the Student class
+                        val student = firstDocument.toObject(Student::class.java)
+                        _studentData.postValue(student)
+                    } else {
+                        _error.postValue("No student data found in Profile subcollection")
+                    }
                 } else {
-                    _error.postValue("Student data not found")
+                    _error.postValue("Profile subcollection is empty")
                 }
             }
             .addOnFailureListener { exception ->
@@ -34,5 +44,3 @@ class HomeViewModel : ViewModel() {
             }
     }
 }
-
-

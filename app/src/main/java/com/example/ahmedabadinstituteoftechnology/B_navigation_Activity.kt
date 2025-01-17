@@ -40,13 +40,6 @@ class B_navigation_Activity : AppCompatActivity() {
                 navController.navigate(R.id.navigation_notifications, bundle)
             }
         }
-
-        // Set up navigation
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-            )
-        )
        // setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }

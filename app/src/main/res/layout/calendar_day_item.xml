@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="@dimen/_3sdp"
-    android:background="#FFFFFF"
-    android:elevation="@dimen/_5sdp">
+    android:background="@color/white"
+    android:elevation="@dimen/_10sdp">
 
     <TextView
         android:id="@+id/day_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:gravity="center"
         android:padding="@dimen/_13sdp"
         android:textColor="#000000"
         android:textAlignment="center"
-        android:textSize="@dimen/_9sdp"
+        android:textSize="@dimen/_7sdp"
         android:background="@drawable/day_background" />
 
 </FrameLayout>

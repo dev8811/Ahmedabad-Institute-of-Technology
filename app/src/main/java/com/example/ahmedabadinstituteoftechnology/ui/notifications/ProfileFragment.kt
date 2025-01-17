@@ -61,8 +61,8 @@ class ProfileFragment : Fragment() {
             binding.tvStudentDOB.text = "Date of Birth : ${profile.dateOfBirth}"
             binding.tvStudentContact.text = "Contact No : ${profile.contactNumber}"
             binding.tvStudentBranch.text = "Branch : ${profile.branch}"
-            binding.tvPerentContact.text = "Parent Contact No : ${profile.parent_Number}"
-            binding.tvStudentABCID.text = "ABC ID : ${profile.abc_id}"
+            binding.tvPerentContact.text = "Parent Contact No : ${profile.parentNumber}"
+            binding.tvStudentABCID.text = "ABC ID : ${profile.abcId   }"
         }
 
         profileViewModel.error.observe(viewLifecycleOwner) { error ->

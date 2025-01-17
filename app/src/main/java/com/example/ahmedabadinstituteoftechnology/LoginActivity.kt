@@ -55,35 +55,44 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun authenticateUser(enrollmentNumber: String, password: String) {
-        firestore.collection("Student")
-            .document(enrollmentNumber)
-            .get()
-            .addOnSuccessListener { documentSnapshot ->
-                if (documentSnapshot.exists()) {
-                    val storedPassword = documentSnapshot.getString("password")
+        // Query all documents in the Profile subcollection
+        firestore.collection("Student").document(enrollmentNumber).collection("Profile").get()
+            .addOnSuccessListener { querySnapshot ->
+                if (!querySnapshot.isEmpty) {
+                    // Get the first document from the result
+                    val firstDocument = querySnapshot.documents.firstOrNull()
 
-                    if (storedPassword != null && storedPassword == password) {
-                        Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
+                    if (firstDocument != null) {
+                        val storedPassword = firstDocument.getString("password")
 
-                        // Save enrollment number and login state in SharedPreferences
-                        saveLoginState(enrollmentNumber)
+                        if (storedPassword != null && storedPassword == password) {
+                            Toast.makeText(this, "Login successful!", Toast.LENGTH_SHORT).show()
 
-                        // Navigate to main activity
-                        navigateToMainActivity()
+                            // Save enrollment number and login state in SharedPreferences
+                            saveLoginState(enrollmentNumber)
+
+                            // Navigate to main activity
+                            navigateToMainActivity()
+                        } else {
+                            Toast.makeText(this, "Invalid password", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
-                        Toast.makeText(this, "Invalid password", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this, "No documents found in Profile subcollection", Toast.LENGTH_SHORT
+                        ).show()
                     }
                 } else {
-                    Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Profile subcollection is empty", Toast.LENGTH_SHORT)
+                        .show()
                 }
-            }
-            .addOnFailureListener { e ->
+            }.addOnFailureListener { e ->
                 Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
+
     private fun saveLoginState(enrollmentNumber: String) {
-        val sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString(ENROLLMENT_KEY, enrollmentNumber)
         editor.putBoolean(LOGGED_IN_KEY, true)
@@ -91,7 +100,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun isUserLoggedIn(): Boolean {
-        val sharedPreferences = getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE)
         return sharedPreferences.getBoolean(LOGGED_IN_KEY, false)
     }
 
@@ -103,12 +112,14 @@ class LoginActivity : AppCompatActivity() {
 
     companion object {
         fun getEnrollmentNumber(context: Context): String? {
-            val sharedPreferences = context.getSharedPreferences("AIT_Preferences", Context.MODE_PRIVATE)
+            val sharedPreferences =
+                context.getSharedPreferences("AIT_Preferences", MODE_PRIVATE)
             return sharedPreferences.getString("enrollment_number", null)
         }
 
         fun logoutUser(context: Context) {
-            val sharedPreferences = context.getSharedPreferences("AIT_Preferences", Context.MODE_PRIVATE)
+            val sharedPreferences =
+                context.getSharedPreferences("AIT_Preferences", MODE_PRIVATE)
             val editor = sharedPreferences.edit()
             editor.putBoolean("logged_in", false)
             editor.remove("enrollment_number")

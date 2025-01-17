@@ -45,6 +45,7 @@ class HomeFragment : Fragment()
     private fun setupNavigation() {
         // Map views to navigation actions
         val navigationMap = mapOf(
+
             binding.timetableIMG to R.id.action_navigation_home_to_Timetable_fragment,
             binding.timeTableCard to R.id.action_navigation_home_to_Timetable_fragment,
             binding.attendanceCARD to R.id.action_navigation_home_to_navigation_attendance,
@@ -71,7 +72,7 @@ class HomeFragment : Fragment()
     private fun observeViewModel() {
         homeViewModel.studentData.observe(viewLifecycleOwner) { student ->
             student?.let {
-                binding.profileName.text = "Name: ${it.name}"
+                binding.profileName.text = "Name: ${it.Name}"
                 binding.profileSemester.text = "Semester: ${it.semester}"
             }
         }
@@ -90,6 +91,6 @@ class HomeFragment : Fragment()
 }
 
 data class Student(
-    val name: String = "",
+    val Name: String = "",
     val semester: String = ""
 )

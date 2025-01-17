@@ -1,12 +1,11 @@
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
+    android:padding="12dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="6dp"
-    android:padding="12dp">
+    app:cardElevation="6dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,10 +19,10 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="12dp"
-            android:src="@drawable/ic_placeholder"
-            android:contentDescription="Placeholder icon"
             android:background="@drawable/circle_background"
-            android:padding="10dp" />
+            android:contentDescription="Placeholder icon"
+            android:padding="10dp"
+            android:src="@drawable/ic_placeholder" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -36,19 +35,19 @@
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:lineSpacingExtra="4dp"
                 android:text="Discuss about the new feature to add jobdesk® web application"
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
+                android:textStyle="bold" />
 
             <!-- Class and Semester -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginBottom="4dp">
+                android:layout_marginBottom="4dp"
+                android:orientation="horizontal">
 
                 <!-- Class -->
 

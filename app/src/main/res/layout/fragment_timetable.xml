@@ -9,6 +9,8 @@
     android:background="@color/white">
 
     <!-- CardView for Spinner -->
+
+
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,6 +29,7 @@
             android:textAlignment="center"
             android:spinnerMode="dropdown"/>
     </androidx.cardview.widget.CardView>
+
 
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView

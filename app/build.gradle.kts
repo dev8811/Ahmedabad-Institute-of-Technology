@@ -64,24 +64,21 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
-    androidTestImplementation ("androidx.test.ext:junit:1.1.1")
-    // or another PDF viewer library
-    implementation ("com.google.firebase:firebase-firestore:24.8.1")
-    implementation ("org.apache.poi:poi:5.2.3")// For reading Excel files
-    implementation ("org.apache.poi:poi-ooxml:5.2.3")
+    androidTestImplementation (libs.androidx.junit.v111)
+    implementation (libs.firebase.firestore.v2481)
+    implementation (libs.poi)// For reading Excel files
+    implementation (libs.poi.ooxml)
     testImplementation(libs.junit.junit)
     androidTestImplementation(libs.junit.junit)
-
-    androidTestImplementation ("androidx.test:core:1.5.0")
-    androidTestImplementation("androidx.test:runner:1.5.2")
-    androidTestImplementation("androidx.test:rules:1.5.0")
-    androidTestImplementation ("androidx.test.ext:junit:1.1.5")
-
-    implementation ("androidx.recyclerview:recyclerview:1.3.1")
-    implementation("androidx.cardview:cardview:1.0.0")
-    implementation("de.hdodenhof:circleimageview:3.1.0")
-
-    implementation ("com.intuit.sdp:sdp-android:1.1.1")
+    androidTestImplementation (libs.androidx.core)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.rules)
+    androidTestImplementation (libs.androidx.junit.v115)
+    implementation (libs.androidx.recyclerview)
+    implementation(libs.androidx.cardview)
+    implementation(libs.circleimageview)
+    implementation (libs.sdp.android)
+    // progress bar
 
 
 

@@ -1,5 +1,6 @@
 package com.example.ahmedabadinstituteoftechnology.ui.dashboard
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
 import android.view.ViewGroup
@@ -49,6 +50,7 @@ class NoticeAdapter(private var noticeList: MutableList<Notice>) :
         )
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: NoticeViewHolder, position: Int) {
         val notice = noticeList[position]
         holder.titleTextView.text = notice.Title
@@ -65,6 +67,7 @@ class NoticeAdapter(private var noticeList: MutableList<Notice>) :
     override fun getItemCount(): Int = noticeList.size
 
     // Method to sort notices by date
+    @SuppressLint("NotifyDataSetChanged")
     fun sortNoticesByDate() {
         noticeList.sortByDescending { it.date?.toDate() }
         notifyDataSetChanged()
