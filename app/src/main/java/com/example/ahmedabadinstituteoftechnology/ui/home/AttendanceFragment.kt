@@ -51,7 +51,7 @@ class AttendanceFragment : Fragment() {
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "DefaultLocale")
     private fun setupCalendar(enrollmentNumber: String) {
         updateMonthText()
         fetchAttendanceData(enrollmentNumber) { attendance ->
@@ -73,7 +73,8 @@ class AttendanceFragment : Fragment() {
                     attendance.containsKey(dateKey) -> attendance[dateKey] ?: "absent"
                     else -> "default"
                 }
-                daysList.add(DayItem(day.toString(), status))
+                // Format day with leading zero for single-digit days
+                daysList.add(DayItem(String.format("%02d", day), status))
             }
 
             // Bind data to RecyclerView

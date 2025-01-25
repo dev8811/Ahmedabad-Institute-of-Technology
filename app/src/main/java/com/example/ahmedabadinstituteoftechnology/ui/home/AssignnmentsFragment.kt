@@ -1,60 +1,238 @@
 package com.example.ahmedabadinstituteoftechnology.ui.home
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.app.DownloadManager
+import android.app.ProgressDialog
+import android.content.Context
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.os.Environment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.ahmedabadinstituteoftechnology.LoginActivity
 import com.example.ahmedabadinstituteoftechnology.R
+import com.example.ahmedabadinstituteoftechnology.databinding.FragmentAssignnmentsBinding
+import com.example.ahmedabadinstituteoftechnology.ui.home.adapter.TimetableAdapter
+import com.google.firebase.storage.FirebaseStorage
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AssignnmentsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AssignnmentsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private var _binding: FragmentAssignnmentsBinding? = null
+    private val binding get() = _binding!!
+    private val courseAdapter =
+        TimetableAdapter { fileName, downloadUrl -> downloadPDF(fileName, downloadUrl) }
+    private val storageReference = FirebaseStorage.getInstance().reference
+
+    // Map of branch codes to branch names
+    private val branchCodeMap = mapOf(
+        "07" to "Computer Engineering",
+        "16" to "Information Technology",
+        "19" to "Mechanical Engineering",
+        "06" to "Civil Engineering",
+        "09" to "Electrical Engineering",
+        "11" to "Electronics and Communication Engineering",
+        "05" to "Chemical Engineering",
+        "02" to "Automobile Engineering",
+        "03" to "Biomedical Engineering"
+    )
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentAssignnmentsBinding.inflate(inflater, container, false)
+
+        // Set up RecyclerView
+        binding.recyclerView.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = courseAdapter
+        }
+
+        // Set up semester Spinner
+        val semesters = listOf(
+            "Select Semester",
+            "Semester 1",
+            "Semester 2",
+            "Semester 3",
+            "Semester 4",
+            "Semester 5",
+            "Semester 6",
+            "Semester 7",
+            "Semester 8"
+        )
+
+        val Subject = listOf(
+            "Select Subject",
+            "Subject 1",
+            "Subject 2",
+            "Subject 3",
+            "Subject 4",
+            "Subject 5",
+            "Subject 6",
+            "Subject 7",
+            "Subject 8"
+        )
+
+        val spinnerAdapterSemesters =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, semesters)
+        spinnerAdapterSemesters.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.AssignmentsSemesterSpinner.adapter = spinnerAdapterSemesters
+
+        spinnerAdapterSemesters.setDropDownViewResource(R.layout.spinner_item) // Use same layout for dropdown
+        binding.AssignmentsSemesterSpinner.adapter = spinnerAdapterSemesters
+
+        val spinnerAdapterSubject =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, semesters)
+        spinnerAdapterSemesters.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.AssignmentsSubjectSpinner.adapter = spinnerAdapterSemesters
+
+        spinnerAdapterSemesters.setDropDownViewResource(R.layout.spinner_item) // Use same layout for dropdown
+        binding.AssignmentsSubjectSpinner.adapter = spinnerAdapterSemesters
+
+        // Automatically determine branch from enrollment number
+        val enrollmentNumber =
+            LoginActivity.getEnrollmentNumber(requireContext()) // Retrieve enrollment number
+        val branchCode = enrollmentNumber?.substring(7, 9) // Extract 8th and 9th digits
+        val branchName = branchCodeMap[branchCode]
+
+
+        // Semester selection logic
+        binding.AssignmentsSemesterSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                if (position != 0 && branchName != null) {
+                    val selectedSemester = semesters[position]
+                    fetchTimetablesForBranchAndSemester(branchName, selectedSemester,
+                        Subject.toString()
+                    )
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                // No action required
+            }
+        }
+
+
+        return binding.root
+    }
+
+    private fun fetchTimetablesForBranchAndSemester(branch: String, semester: String,Subject: String) {
+        val dialogView = layoutInflater.inflate(R.layout.custom_progress_dialog, null)
+        val progressDialog = AlertDialog.Builder(requireContext()).apply {
+            setView(dialogView)
+            setCancelable(false)
+        }.create()
+
+        progressDialog.show()
+
+        // Construct the path based on selected branch and semester
+        val path = "Assignments/$branch/$semester/$Subject"
+
+        storageReference.child(path).listAll().addOnSuccessListener { listResult ->
+            val courses = mutableListOf<Pair<String, String>>()
+
+            if (listResult.items.isEmpty()) {
+                progressDialog.dismiss()
+                Toast.makeText(
+                    requireContext(),
+                    "No Assignments available for $branch $semester",
+                    Toast.LENGTH_SHORT
+                ).show()
+                courseAdapter.updateData(emptyList())
+                return@addOnSuccessListener
+            }
+
+            val tasks = listResult.items.map { item ->
+                item.downloadUrl.addOnSuccessListener { uri ->
+                    courses.add(item.name to uri.toString())
+                    if (courses.size == listResult.items.size) {
+                        progressDialog.dismiss()
+                        courseAdapter.updateData(courses)
+                    }
+                }
+            }
+
+            tasks.forEach { task ->
+                task.addOnFailureListener { exception ->
+                    progressDialog.dismiss()
+                    Toast.makeText(
+                        requireContext(), "Error: ${exception.message}", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }.addOnFailureListener { exception ->
+            progressDialog.dismiss()
+            Toast.makeText(requireContext(), "Error: ${exception.message}", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_assignnments, container, false)
+    @SuppressLint("Range")
+    private fun downloadPDF(fileName: String, downloadUrl: String) {
+        val progressDialog = ProgressDialog(requireContext()).apply {
+            setTitle("Downloading $fileName")
+            setMessage("Please wait...")
+            setCancelable(false)
+            show()
+        }
+
+        val request = DownloadManager.Request(Uri.parse(downloadUrl)).apply {
+            setTitle("Downloading $fileName")
+            setDescription("Downloading file...")
+            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+        }
+
+        val downloadManager =
+            requireContext().getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        val downloadId = downloadManager.enqueue(request)
+
+        Thread {
+            var isDownloading = true
+            while (isDownloading) {
+                val query = DownloadManager.Query().setFilterById(downloadId)
+                val cursor = downloadManager.query(query)
+
+                if (cursor.moveToFirst()) {
+                    val status = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS))
+                    when (status) {
+                        DownloadManager.STATUS_SUCCESSFUL -> {
+                            isDownloading = false
+                            requireActivity().runOnUiThread {
+                                progressDialog.dismiss()
+                                Toast.makeText(
+                                    requireContext(),
+                                    "$fileName downloaded successfully!",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+
+                        DownloadManager.STATUS_FAILED -> {
+                            isDownloading = false
+                            requireActivity().runOnUiThread {
+                                progressDialog.dismiss()
+                                Toast.makeText(
+                                    requireContext(), "Download failed", Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    }
+                }
+                cursor.close()
+                Thread.sleep(1000)
+            }
+        }.start()
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AssignnmentsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AssignnmentsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

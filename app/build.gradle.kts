@@ -10,15 +10,13 @@ android {
 
     defaultConfig {
         applicationId = "com.example.ahmedabadinstituteoftechnology"
-        minSdk = 29
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-  
-
 
     viewBinding {
         enable = true
@@ -28,7 +26,6 @@ android {
     }
 
     buildTypes {
-
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -37,51 +34,56 @@ android {
             )
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_11 // Changed to JDK 11 for compatibility
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "11" // Updated JVM target for JDK 11
     }
+
     buildFeatures {
         viewBinding = true
+        dataBinding = true // Ensure data binding is explicitly enabled
     }
 }
 
-
-
 dependencies {
+    // Core Android libraries
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
+    // Lifecycle and Navigation Components
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    // Firebase libraries
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.storage)
-    androidTestImplementation (libs.androidx.junit.v111)
-    implementation (libs.firebase.firestore.v2481)
-    implementation (libs.poi)// For reading Excel files
-    implementation (libs.poi.ooxml)
-    testImplementation(libs.junit.junit)
-    androidTestImplementation(libs.junit.junit)
-    androidTestImplementation (libs.androidx.core)
-    androidTestImplementation(libs.androidx.runner)
-    androidTestImplementation(libs.androidx.rules)
-    androidTestImplementation (libs.androidx.junit.v115)
-    implementation (libs.androidx.recyclerview)
+
+    // Glide for image loading
+
+
+    // RecyclerView, CardView, and additional libraries
+    implementation(libs.androidx.recyclerview)
     implementation(libs.androidx.cardview)
     implementation(libs.circleimageview)
-    implementation (libs.sdp.android)
-    // progress bar
+    implementation(libs.sdp.android)
 
+    // Testing dependencies
+    androidTestImplementation(libs.androidx.junit.v111)
+    androidTestImplementation(libs.androidx.core)
+    androidTestImplementation(libs.androidx.runner)
+    androidTestImplementation(libs.androidx.rules)
+    testImplementation(libs.junit.junit)
 
-
-
+    // Apache POI for Excel file handling
 }
-

@@ -72,6 +72,9 @@ class My_Course_Fragment : Fragment() {
         spinnerAdapterSemesters.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.courseSemesterSpinner.adapter = spinnerAdapterSemesters
 
+        spinnerAdapterSemesters.setDropDownViewResource(R.layout.spinner_item) // Use same layout for dropdown
+        binding.courseSemesterSpinner.adapter = spinnerAdapterSemesters
+
         // Automatically determine branch from enrollment number
         val enrollmentNumber =
             LoginActivity.getEnrollmentNumber(requireContext()) // Retrieve enrollment number

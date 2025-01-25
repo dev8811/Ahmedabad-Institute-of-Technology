@@ -78,6 +78,10 @@ class TimetableFragment : Fragment() {
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.semesterSpinner.adapter = spinnerAdapter
 
+        spinnerAdapter.setDropDownViewResource(R.layout.spinner_item) // Use same layout for dropdown
+        binding.semesterSpinner.adapter = spinnerAdapter
+
+
         // Set Item Selected Listener for Spinner
         binding.semesterSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
@@ -86,7 +90,7 @@ class TimetableFragment : Fragment() {
                 ) {
                     if (position != 0 && branchName != null) {
                         val selectedSemester = semesters[position]
-                        fetchTimetablesForBranchAndSemester(branchName!!, selectedSemester)
+                        fetchTimetablesForBranchAndSemester(branchName, selectedSemester)
                     }
                 }
 
@@ -105,6 +109,7 @@ class TimetableFragment : Fragment() {
         }
     }
 
+    @SuppressLint("InflateParams")
     private fun fetchTimetablesForBranchAndSemester(branch: String, semester: String) {
         val dialogView = layoutInflater.inflate(R.layout.custom_progress_dialog, null)
         val progressDialog = AlertDialog.Builder(requireContext()).apply {

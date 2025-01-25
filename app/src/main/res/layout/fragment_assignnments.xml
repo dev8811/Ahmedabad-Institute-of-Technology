@@ -1,14 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.AssignnmentsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    android:paddingHorizontal="10dp"
+    android:orientation="vertical"
+    android:background="@color/white">
+
+    <!-- CardView for Spinner -->
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:radius="12dp"
+        android:elevation="6dp">
+
+        <Spinner
+            android:id="@+id/AssignmentsSemesterSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tooltipText="helow"
+            android:padding="12dp"
+            android:background="@drawable/spinner_background"
+            android:popupBackground="@color/white"
+            android:textAlignment="center"
+            android:spinnerMode="dropdown"/>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:radius="12dp"
+        android:elevation="6dp">
+
+        <Spinner
+            android:id="@+id/AssignmentsSubjectSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tooltipText="helow"
+            android:padding="12dp"
+            android:background="@drawable/spinner_background"
+            android:popupBackground="@color/white"
+            android:textAlignment="center"
+            android:spinnerMode="dropdown"/>
+    </androidx.cardview.widget.CardView>
+
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
-
-</FrameLayout>
+        android:paddingVertical="8dp"
+        android:layout_marginTop="8dp"
+        android:clipToPadding="false"
+        android:scrollbars="vertical" />
+</LinearLayout>
